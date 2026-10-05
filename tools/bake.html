@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Bake animasi → GLB</title>
+  <style>body{font-family:system-ui;background:#111;color:#eee;padding:24px} pre{white-space:pre-wrap}</style>
+  <script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+  </script>
+</head>
+<body>
+<h1>Bake animasi produk → models/*.glb</h1>
+<pre id="log"></pre>
+<script type="module">
+// Merekam animasi idle (sama seperti ProductAnimation + efek di Unity) menjadi AnimationClip
+// berdurasi LOOP detik, lalu mengekspor GLB beranimasi untuk model-viewer, Scene Viewer, dan AR Quick Look.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+const LOOP = 8;     // detik
+const FPS = 30;
+const DEG = Math.PI / 180;
+const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
+const q = (axis, rad) => new THREE.Quaternion().setFromAxisAngle(axis, rad);
+
+// Ukuran tampilan di ruangan (model asli dirancang untuk kartu 12 cm)
+const DISPLAY_SCALE = {
+  'tiffany-setting-ring': 4,
+  'tiffany-heart-tag': 4,
+  'tiffany-hardwear-bracelet': 4,
+  'adidas-supernova': 3,
+  'adidas-trionda': 3.5,
+};
+
+const log = (t) => (document.getElementById('log').textContent += t + '\n');
+// frekuensi dibulatkan agar tepat N siklus dalam LOOP detik → loop tanpa patahan
+const loopFreq = (f) => Math.max(1, Math.round(f * LOOP)) / LOOP;
+const loopRate = (degPerSec) => (360 * Math.max(1, Math.round(Math.abs(degPerSec) * LOOP / 360)) / LOOP) * Math.sign(degPerSec || 1);
+
+function bakeProduct(p, scene) {
+  const a = p.animation;
+  const visual = scene.getObjectByName(a.visual);
+  const tracked = new Map(); // node → {base, frames:{pos,quat,scale}}
+  const track = (node) => {
+    if (!tracked.has(node)) tracked.set(node, {
+      pos: node.position.clone(), quat: node.quaternion.clone(), scale: node.scale.clone(),
+      P: [], Q: [], S: [],
+    });
+    return tracked.get(node);
+  };
+  track(visual);
+
+  const effects = p.effects.map((e) => {
+    const node = scene.getObjectByName(e.node);
+    if (!node) return null;
+    const ef = { ...e, node };
+    track(node);
+    if (e.type === 'LinkWave') ef.links = e.links.map((n) => scene.getObjectByName(n)).filter(Boolean).map((l) => (track(l), l));
+    if (e.type === 'BallBounce') { ef.ball = scene.getObjectByName(e.ball); if (ef.ball) track(ef.ball); }
+    return ef;
+  }).filter(Boolean);
+
+  const spinRate = a.spinMode === 'Continuous' ? loopRate(a.spinSpeed) : 0;
+  const swayF = loopFreq(a.swayFrequency), bobF = loopFreq(a.bobFrequency);
+  const frames = LOOP * FPS + 1;
+  const times = [];
+
+  for (let i = 0; i < frames; i++) {
+    const t = i / FPS;
+    times.push(t);
+    for (const [n, s] of tracked) { n.position.copy(s.pos); n.quaternion.copy(s.quat); n.scale.copy(s.scale); }
+
+    const spin = a.spinMode === 'Continuous' ? spinRate * t : Math.sin(t * swayF * Math.PI * 2) * a.spinSpeed;
+    const bob = Math.sin(t * bobF * Math.PI * 2) * a.bobAmplitude;
+    const vs = tracked.get(visual);
+    visual.position.copy(vs.pos).addScaledVector(Y, a.liftHeight + bob);
+    visual.quaternion.copy(vs.quat).multiply(q(Y, -spin * DEG));
+
+    for (const e of effects) {
+      const s = tracked.get(e.node);
+      switch (e.type) {
+        case 'RunBounce': {
+          const ph = t * loopFreq(e.stepsPerSecond) * Math.PI * 2;
+          e.node.position.copy(s.pos).addScaledVector(Y, Math.abs(Math.sin(ph)) * e.hopHeight);
+          e.node.quaternion.copy(s.quat).multiply(q(Z, Math.cos(ph) * e.pitchAngle * DEG));
+          break;
+        }
+        case 'Pendulum':
+          e.node.quaternion.copy(s.quat).multiply(q(Z, Math.sin(t * loopFreq(e.frequency) * Math.PI * 2) * e.angle * DEG));
+          break;
+        case 'LinkWave':
+          e.links.forEach((l, k) => {
+            const ang = Math.sin(t * loopFreq(e.frequency) * Math.PI * 2 + k * e.phaseStep) * e.amplitude;
+            l.quaternion.copy(tracked.get(l).quat).multiply(q(X, -ang * DEG));
+          });
+          break;
+        case 'BallBounce': {
+          const phase = (t * loopFreq(e.bouncesPerSecond)) % 1;
+          const h = 4 * phase * (1 - phase);
+          const sq = e.squash * Math.max(0, Math.min(1, 1 - h * 6));
+          e.node.position.copy(s.pos).addScaledVector(Y, h * e.height);
+          e.node.scale.set(s.scale.x * (1 + sq * 0.6), s.scale.y * (1 - sq), s.scale.z * (1 + sq * 0.6));
+          if (e.ball) e.ball.quaternion.copy(tracked.get(e.ball).quat).multiply(q(X, -loopRate(e.rollSpeed) * t * DEG));
+          break;
+        }
+        case 'Pulse': {
+          const k = (Math.sin(t * loopFreq(e.frequency) * Math.PI * 2) + 1) / 2;
+          e.node.scale.copy(s.scale).multiplyScalar(1 + e.scalePulse * k);
+          break;
+        }
+      }
+    }
+    for (const [n, s] of tracked) { s.P.push(...n.position.toArray()); s.Q.push(...n.quaternion.toArray()); s.S.push(...n.scale.toArray()); }
+  }
+
+  const tracks = [];
+  for (const [n, s] of tracked) {
+    // kembalikan pose dasar (frame 0) agar model statis tampil benar
+    n.position.copy(s.pos); n.quaternion.copy(s.quat); n.scale.copy(s.scale);
+    tracks.push(new THREE.VectorKeyframeTrack(`${n.name}.position`, times, s.P));
+    tracks.push(new THREE.QuaternionKeyframeTrack(`${n.name}.quaternion`, times, s.Q));
+    tracks.push(new THREE.VectorKeyframeTrack(`${n.name}.scale`, times, s.S));
+  }
+  return new THREE.AnimationClip('Idle', LOOP, tracks);
+}
+
+function tuneMaterials(scene) {
+  // sama dengan versi WebAR: logam sedikit kurang metalik supaya tidak gelap di AR
+  scene.traverse((o) => {
+    if (!o.isMesh) return;
+    if (o.material.metalness > 0.5) { o.material.metalness = 0.65; o.material.roughness = Math.max(o.material.roughness, 0.22); }
+  });
+}
+
+async function run() {
+  const catalog = await (await fetch('../source/products.json')).json();
+  const loader = new GLTFLoader();
+  const exporter = new GLTFExporter();
+  const out = [];
+  for (const p of catalog.products) {
+    const gltf = await loader.loadAsync(`../source/${p.id}.glb`);
+    const product = gltf.scene.children[0];   // node root prefab
+    tuneMaterials(product);
+    const clip = bakeProduct(p, product);
+
+    // root baru: skala tampilan di ruangan
+    const root = new THREE.Group();
+    root.name = 'Root';
+    const display = new THREE.Group();
+    display.name = 'Display';
+    display.scale.setScalar(DISPLAY_SCALE[p.id] ?? 3);
+    display.add(product);
+    root.add(display);
+
+    const glb = await exporter.parseAsync(root, { binary: true, animations: [clip] });
+    const res = await fetch(`/save?path=models/${p.id}.glb`, { method: 'POST', body: glb });
+    log(`${p.id}: ${await res.text()} · ${clip.tracks.length} track`);
+    out.push({ ...p, model: `models/${p.id}.glb`, usdz: `models/${p.id}.usdz`, displayScale: DISPLAY_SCALE[p.id] ?? 3 });
+  }
+  const json = JSON.stringify({ loopSeconds: LOOP, products: out }, null, 2);
+  const res = await fetch('/save?path=models/products.json', { method: 'POST', body: json });
+  log(await res.text());
+  window.bakeDone = true;
+}
+
+run().catch((e) => { log('ERROR ' + e.stack); window.bakeError = String(e); });
+</script>
+</body>
+</html>

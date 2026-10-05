@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><title>Buat thumbnail</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+<style>body{background:#101215;color:#eee;font-family:system-ui;padding:16px} model-viewer{width:512px;height:512px;background:transparent}</style>
+</head>
+<body>
+<model-viewer id="mv" environment-image="neutral" exposure="1.05" shadow-intensity="1" camera-orbit="25deg 72deg 112%" interaction-prompt="none"></model-viewer>
+<pre id="log"></pre>
+<script type="module">
+// Render thumbnail PNG (latar transparan) untuk setiap produk → img/thumb-<id>.png
+const mv = document.getElementById('mv');
+const log = (t) => (document.getElementById('log').textContent += t + '\n');
+const products = (await (await fetch('../models/products.json')).json()).products;
+for (const p of products) {
+  const loaded = new Promise((r) => mv.addEventListener('load', r, { once: true }));
+  mv.src = '../' + p.model;
+  await loaded;
+  mv.pause();
+  mv.currentTime = 1.2; // pose animasi yang menarik
+  await new Promise((r) => setTimeout(r, 600));
+  const blob = await mv.toBlob({ mimeType: 'image/png', idealAspect: false });
+  const res = await fetch(`/save?path=img/thumb-${p.id}.png`, { method: 'POST', body: blob });
+  log(await res.text());
+}
+window.thumbsDone = true;
+</script>
+</body>
+</html>

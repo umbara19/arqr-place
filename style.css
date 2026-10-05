@@ -1,0 +1,309 @@
+/* ARQR Place — gaya bersih ala Apple: font sistem, material transparan, gerak halus */
+:root {
+  --bg: #0a0b0d;
+  --surface: #15171b;
+  --surface-2: #1d2025;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --text: #f5f5f7;
+  --text-2: #a1a4ab;
+  --accent: #81d8d0;
+  --accent-ink: #062623;
+  --glow: rgba(129, 216, 208, 0.22);
+  --radius-l: 28px;
+  --radius-m: 18px;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font: 100%/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Bar atas: material transparan, konten lewat di bawahnya ---------- */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: env(safe-area-inset-top);
+  background: rgba(10, 11, 13, 0.62);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+.bar::after { /* tepi blur halus, bukan garis keras */
+  content: "";
+  position: absolute;
+  inset: auto 0 -12px;
+  height: 12px;
+  background: linear-gradient(rgba(10, 11, 13, 0.5), transparent);
+  pointer-events: none;
+}
+.bar-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: conic-gradient(from 210deg, #81d8d0, #e8ff3a, #1f4fb5, #81d8d0);
+  flex: none;
+}
+.bar-title { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.bar-title strong { font-size: 0.95rem; letter-spacing: -0.01em; }
+.bar-title span { font-size: 0.75rem; color: var(--text-2); letter-spacing: 0.01em; }
+.bar-link {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+  transition: background 150ms ease-out, transform 100ms ease-out;
+}
+.bar-link:hover { background: rgba(255, 255, 255, 0.12); color: var(--text); }
+.bar-link:active { transform: scale(0.97); }
+
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 16px 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+main > * { min-width: 0; }
+
+/* ---------- Panggung 3D ---------- */
+.stage {
+  position: relative;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 50% 38%, var(--glow), transparent 70%),
+    linear-gradient(180deg, var(--surface-2), var(--surface));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  transition: background 600ms var(--ease);
+}
+model-viewer {
+  display: block;
+  width: 100%;
+  height: min(62dvh, 560px);
+  min-height: 340px;
+  background: transparent;
+  --poster-color: transparent;
+  transition: opacity 260ms var(--ease), transform 420ms var(--ease);
+}
+model-viewer.is-switching { opacity: 0; transform: scale(0.97); }
+
+.progress {
+  position: absolute;
+  left: 24px; right: 24px; top: 16px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  width: var(--p, 0%);
+  background: var(--accent);
+  transition: width 200ms linear, opacity 300ms ease;
+}
+.progress { transition: opacity 300ms ease; }
+.progress.done { opacity: 0; }
+
+.ar-button {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: inherit;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  box-shadow: 0 10px 30px -8px var(--glow), 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 100ms ease-out, background 400ms var(--ease);
+}
+.ar-button svg { width: 22px; height: 22px; fill: currentColor; }
+.ar-button:active { transform: translateX(-50%) scale(0.96); }
+
+.stage-hint {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  background: rgba(10, 11, 13, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---------- Detail produk ---------- */
+.details { padding: 4px 4px 0; }
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: color 400ms var(--ease);
+}
+h1 {
+  margin: 0 0 10px;
+  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+.tagline { margin: 0; max-width: 60ch; color: var(--text-2); font-size: 1.0625rem; line-height: 1.5; }
+.details > * { transition: opacity 220ms ease, transform 320ms var(--ease); }
+.details.is-switching > * { opacity: 0; transform: translateY(6px); }
+
+/* ---------- Pemilih produk: geser horizontal dengan scroll-snap ---------- */
+.picker { margin: 0 -16px; }
+.picker-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 16px;
+  padding: 4px 16px 12px;
+  scrollbar-width: none;
+}
+.picker-track::-webkit-scrollbar { display: none; }
+
+.pick {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: 168px;
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  transition: transform 100ms ease-out, box-shadow 250ms var(--ease), background 250ms var(--ease);
+}
+.pick:active { transform: scale(0.97); }
+.pick:hover { background: var(--surface-2); }
+.pick[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--c); background: var(--surface-2); }
+.pick:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.pick-thumb {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: radial-gradient(70% 70% at 50% 40%, color-mix(in srgb, var(--c) 28%, transparent), transparent 70%), #101215;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.pick-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pick-brand { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+.pick-name { font-size: 0.875rem; line-height: 1.3; font-weight: 600; letter-spacing: -0.005em; }
+
+/* ---------- Cara pakai ---------- */
+.how, .desktop-only {
+  padding: 22px;
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.how h2, .desktop-only h2 { margin: 0 0 14px; font-size: 1.25rem; letter-spacing: -0.015em; line-height: 1.2; }
+.how ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.how li { display: flex; gap: 14px; align-items: flex-start; }
+.how li strong { display: block; font-size: 1rem; letter-spacing: -0.005em; }
+.how li p { margin: 2px 0 0; color: var(--text-2); font-size: 0.9375rem; }
+.num {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--accent-ink);
+  background: var(--accent);
+  transition: background 400ms var(--ease);
+}
+
+.desktop-only { display: flex; gap: 20px; align-items: center; }
+.desktop-only img { border-radius: 14px; background: #fff; padding: 8px; flex: none; }
+.desktop-only p { margin: 0; color: var(--text-2); }
+
+footer { padding: 8px 16px calc(24px + env(safe-area-inset-bottom)); text-align: center; font-size: 0.75rem; color: #6e7178; }
+
+/* ---------- Layar lebar: panggung kiri, detail kanan ---------- */
+@media (min-width: 900px) {
+  main {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-areas:
+      "stage details"
+      "stage picker"
+      "how   phone";
+    align-items: start;
+    column-gap: 28px;
+    padding-top: 24px;
+  }
+  .stage { grid-area: stage; }
+  .details { grid-area: details; padding-top: 24px; }
+  .picker { grid-area: picker; margin: 0; }
+  .picker-track { flex-wrap: wrap; overflow: visible; padding: 4px 0; }
+  .pick { width: calc(50% - 6px); }
+  .how { grid-area: how; }
+  .desktop-only { grid-area: phone; }
+  model-viewer { height: 620px; }
+}
+
+/* ---------- Aksesibilitas ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; }
+  model-viewer.is-switching { transform: none; }
+  .details.is-switching > * { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .bar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .stage-hint { background: var(--surface-2); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root { --text-2: #d6d8dc; --hairline: rgba(255, 255, 255, 0.35); }
+}

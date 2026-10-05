@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="description" content="Taruh animasi 3D produk Tiffany & Co. dan adidas di ruanganmu lewat kamera HP, tanpa QR dan tanpa aplikasi.">
+  <title>ARQR Place · Tiffany &amp; Co. × adidas</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-inner">
+      <span class="logo" aria-hidden="true"></span>
+      <div class="bar-title">
+        <strong>ARQR Place</strong>
+        <span>Tiffany &amp; Co. × adidas</span>
+      </div>
+      <a class="bar-link" href="https://umbara19.github.io/arqr-brands/">Versi scan QR</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="stage" aria-label="Pratinjau 3D produk">
+      <model-viewer
+        id="viewer"
+        alt="Model 3D produk beranimasi"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto"
+        ar-placement="floor"
+        camera-controls
+        touch-action="pan-y"
+        autoplay
+        shadow-intensity="1.1"
+        shadow-softness="0.8"
+        exposure="1.05"
+        environment-image="neutral"
+        camera-orbit="25deg 74deg 118%"
+        min-camera-orbit="auto auto 60%"
+        max-camera-orbit="auto auto 220%"
+        interaction-prompt="none"
+        loading="eager">
+        <div class="progress" slot="progress-bar"><span></span></div>
+        <button class="ar-button" slot="ar-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 3.5 7.25v9.5L12 21.5l8.5-4.75v-9.5L12 2.5Zm0 2.29 6.2 3.46L12 11.7 5.8 8.25 12 4.79ZM5.5 9.97l5.5 3.07v6.14l-5.5-3.07V9.97Zm7.5 9.21v-6.14l5.5-3.07v6.14L13 19.18Z"/></svg>
+          Lihat di ruanganmu
+        </button>
+      </model-viewer>
+      <p class="stage-hint" id="stageHint">Geser untuk memutar · cubit untuk zoom</p>
+    </section>
+
+    <section class="details" aria-live="polite">
+      <p class="eyebrow" id="brand">Tiffany &amp; Co.</p>
+      <h1 id="product">The Tiffany® Setting Engagement Ring</h1>
+      <p class="tagline" id="tagline"></p>
+    </section>
+
+    <nav class="picker" aria-label="Pilih produk">
+      <div class="picker-track" id="picker" role="list"></div>
+    </nav>
+
+    <section class="how" id="how">
+      <h2>Cara menaruh di ruanganmu</h2>
+      <ol>
+        <li><span class="num">1</span><div><strong>Ketuk “Lihat di ruanganmu”</strong><p>Kamera HP terbuka, tanpa perlu install aplikasi.</p></div></li>
+        <li><span class="num">2</span><div><strong>Arahkan ke lantai atau meja</strong><p>Gerakkan HP perlahan sampai permukaannya terdeteksi.</p></div></li>
+        <li><span class="num">3</span><div><strong>Taruh, geser, dan putar</strong><p>Seret untuk memindah ke pojok ruangan, cubit untuk memperbesar. Animasinya tetap berjalan.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="desktop-only" id="openOnPhone" hidden>
+      <img src="img/qr-site.png" alt="QR untuk membuka halaman ini di HP" width="132" height="132">
+      <div>
+        <h2>Buka di HP untuk mode AR</h2>
+        <p>Scan QR ini dengan kamera iPhone atau Android. Di laptop, model tetap bisa diputar dan diperbesar.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>Model 3D adalah prototipe bergaya untuk tugas kuliah, bukan model resmi brand.</footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

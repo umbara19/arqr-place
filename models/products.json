@@ -1,0 +1,193 @@
+{
+  "loopSeconds": 8,
+  "products": [
+    {
+      "id": "tiffany-setting-ring",
+      "brand": "Tiffany & Co.",
+      "product": "The Tiffany® Setting Engagement Ring",
+      "tagline": "Cincin tunangan ikonik (sejak 1886) dengan enam cakar yang mengangkat berlian agar cahayanya maksimal.",
+      "color": "#81D8D0",
+      "model": "models/tiffany-setting-ring.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0.022,
+        "spinMode": "Continuous",
+        "spinSpeed": 55,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        }
+      ],
+      "usdz": "models/tiffany-setting-ring.usdz",
+      "displayScale": 4
+    },
+    {
+      "id": "tiffany-heart-tag",
+      "brand": "Tiffany & Co.",
+      "product": "Return to Tiffany® Heart Tag Pendant",
+      "tagline": "Liontin hati perak dengan ukiran \"Please Return to Tiffany & Co. New York\".",
+      "color": "#81D8D0",
+      "model": "models/tiffany-heart-tag.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0,
+        "spinMode": "Sway",
+        "spinSpeed": 35,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        },
+        {
+          "type": "Pendulum",
+          "node": "Swing",
+          "angle": 14,
+          "frequency": 0.55
+        }
+      ],
+      "usdz": "models/tiffany-heart-tag.usdz",
+      "displayScale": 4
+    },
+    {
+      "id": "tiffany-hardwear-bracelet",
+      "brand": "Tiffany & Co.",
+      "product": "Tiffany HardWear Link Bracelet",
+      "tagline": "Gelang rantai emas dengan mata rantai oval yang tegas, terinspirasi kota New York.",
+      "color": "#81D8D0",
+      "model": "models/tiffany-hardwear-bracelet.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0.012,
+        "spinMode": "Continuous",
+        "spinSpeed": 40,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        },
+        {
+          "type": "LinkWave",
+          "node": "Bracelet",
+          "links": [
+            "Link0",
+            "Link1",
+            "Link2",
+            "Link3",
+            "Link4",
+            "Link5",
+            "Link6",
+            "Link7",
+            "Link8",
+            "Link9",
+            "Link10",
+            "Link11"
+          ],
+          "amplitude": 10,
+          "frequency": 0.9,
+          "phaseStep": 0.7
+        }
+      ],
+      "usdz": "models/tiffany-hardwear-bracelet.usdz",
+      "displayScale": 4
+    },
+    {
+      "id": "adidas-supernova",
+      "brand": "adidas",
+      "product": "Supernova Running Shoes",
+      "tagline": "Sepatu lari harian yang empuk dan nyaman untuk latihan jarak jauh.",
+      "color": "#E8FF3A",
+      "model": "models/adidas-supernova.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0.015,
+        "spinMode": "Continuous",
+        "spinSpeed": 40,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        },
+        {
+          "type": "RunBounce",
+          "node": "Shoe",
+          "stepsPerSecond": 1.6,
+          "hopHeight": 0.012,
+          "pitchAngle": 12
+        }
+      ],
+      "usdz": "models/adidas-supernova.usdz",
+      "displayScale": 3
+    },
+    {
+      "id": "adidas-trionda",
+      "brand": "adidas",
+      "product": "Trionda Official Match Ball",
+      "tagline": "Bola resmi Piala Dunia FIFA 2026 dengan motif gelombang merah, hijau, dan biru.",
+      "color": "#1F4FB5",
+      "model": "models/adidas-trionda.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0.004,
+        "spinMode": "Continuous",
+        "spinSpeed": 30,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        },
+        {
+          "type": "BallBounce",
+          "node": "Bounce",
+          "ball": "Ball",
+          "height": 0.04,
+          "bouncesPerSecond": 1.3,
+          "squash": 0.18,
+          "rollSpeed": 220
+        }
+      ],
+      "usdz": "models/adidas-trionda.usdz",
+      "displayScale": 3.5
+    }
+  ]
+}
