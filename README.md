@@ -1,6 +1,6 @@
-# ARQR Place · Tiffany & Co. × adidas
+# ARQR Place · Tiffany & Co.
 
-Taruh animasi 3D 5 produk **Tiffany & Co.** dan **adidas** di ruanganmu (lantai, meja, atau pojok ruangan)
+Taruh animasi 3D 6 produk **Tiffany & Co.** di ruanganmu (lantai, meja, atau pojok ruangan)
 lewat kamera HP. **Tanpa QR, tanpa install aplikasi.**
 
 **Website:** https://umbara19.github.io/arqr-place/

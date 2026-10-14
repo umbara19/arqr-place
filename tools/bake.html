@@ -31,8 +31,9 @@ const DISPLAY_SCALE = {
   'tiffany-setting-ring': 4,
   'tiffany-heart-tag': 4,
   'tiffany-hardwear-bracelet': 4,
-  'adidas-supernova': 3,
-  'adidas-trionda': 3.5,
+  'tiffany-lock-bangle': 4,
+  'tiffany-t-smile-pendant': 4,
+  'tiffany-victoria-earrings': 4,
 };
 
 const log = (t) => (document.getElementById('log').textContent += t + '\n');
@@ -59,7 +60,6 @@ function bakeProduct(p, scene) {
     const ef = { ...e, node };
     track(node);
     if (e.type === 'LinkWave') ef.links = e.links.map((n) => scene.getObjectByName(n)).filter(Boolean).map((l) => (track(l), l));
-    if (e.type === 'BallBounce') { ef.ball = scene.getObjectByName(e.ball); if (ef.ball) track(ef.ball); }
     return ef;
   }).filter(Boolean);
 
@@ -82,12 +82,6 @@ function bakeProduct(p, scene) {
     for (const e of effects) {
       const s = tracked.get(e.node);
       switch (e.type) {
-        case 'RunBounce': {
-          const ph = t * loopFreq(e.stepsPerSecond) * Math.PI * 2;
-          e.node.position.copy(s.pos).addScaledVector(Y, Math.abs(Math.sin(ph)) * e.hopHeight);
-          e.node.quaternion.copy(s.quat).multiply(q(Z, Math.cos(ph) * e.pitchAngle * DEG));
-          break;
-        }
         case 'Pendulum':
           e.node.quaternion.copy(s.quat).multiply(q(Z, Math.sin(t * loopFreq(e.frequency) * Math.PI * 2) * e.angle * DEG));
           break;
@@ -97,13 +91,11 @@ function bakeProduct(p, scene) {
             l.quaternion.copy(tracked.get(l).quat).multiply(q(X, -ang * DEG));
           });
           break;
-        case 'BallBounce': {
-          const phase = (t * loopFreq(e.bouncesPerSecond)) % 1;
-          const h = 4 * phase * (1 - phase);
-          const sq = e.squash * Math.max(0, Math.min(1, 1 - h * 6));
-          e.node.position.copy(s.pos).addScaledVector(Y, h * e.height);
-          e.node.scale.set(s.scale.x * (1 + sq * 0.6), s.scale.y * (1 - sq), s.scale.z * (1 + sq * 0.6));
-          if (e.ball) e.ball.quaternion.copy(tracked.get(e.ball).quat).multiply(q(X, -loopRate(e.rollSpeed) * t * DEG));
+        case 'LockClick': {
+          const p = (t * loopFreq(e.cyclesPerSecond)) % 1;
+          let k = 0.5 - 0.5 * Math.cos(p * Math.PI * 2);
+          k = Math.max(0, Math.min(1, (k - 0.25) / 0.5));
+          e.node.position.copy(s.pos).addScaledVector(Y, e.lift * k * k * (3 - 2 * k));
           break;
         }
         case 'Pulse': {

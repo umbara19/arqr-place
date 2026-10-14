@@ -58,7 +58,7 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  background: conic-gradient(from 210deg, #81d8d0, #e8ff3a, #1f4fb5, #81d8d0);
+  background: conic-gradient(from 210deg, #81d8d0, #e9c77b, #e8b4a0, #81d8d0);
   flex: none;
 }
 .bar-title { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }

@@ -11,8 +11,9 @@ const THEME = {
   'tiffany-setting-ring': { accent: '#81D8D0', ink: '#062623', glow: 'rgba(129,216,208,0.24)' },
   'tiffany-heart-tag': { accent: '#81D8D0', ink: '#062623', glow: 'rgba(129,216,208,0.24)' },
   'tiffany-hardwear-bracelet': { accent: '#E9C77B', ink: '#2a1d00', glow: 'rgba(233,199,123,0.22)' },
-  'adidas-supernova': { accent: '#E8FF3A', ink: '#1a1d00', glow: 'rgba(232,255,58,0.18)' },
-  'adidas-trionda': { accent: '#6F9BFF', ink: '#050d24', glow: 'rgba(111,155,255,0.26)' },
+  'tiffany-lock-bangle': { accent: '#E8B4A0', ink: '#2b1610', glow: 'rgba(232,180,160,0.24)' },
+  'tiffany-t-smile-pendant': { accent: '#E9C77B', ink: '#2a1d00', glow: 'rgba(233,199,123,0.22)' },
+  'tiffany-victoria-earrings': { accent: '#81D8D0', ink: '#062623', glow: 'rgba(129,216,208,0.24)' },
 };
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;

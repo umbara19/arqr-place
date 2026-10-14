@@ -116,12 +116,12 @@
       "displayScale": 4
     },
     {
-      "id": "adidas-supernova",
-      "brand": "adidas",
-      "product": "Supernova Running Shoes",
-      "tagline": "Sepatu lari harian yang empuk dan nyaman untuk latihan jarak jauh.",
-      "color": "#E8FF3A",
-      "model": "models/adidas-supernova.glb",
+      "id": "tiffany-lock-bangle",
+      "brand": "Tiffany & Co.",
+      "product": "Tiffany Lock Bangle",
+      "tagline": "Gelang bergaya gembok dari koleksi Tiffany Lock, simbol ikatan yang terkunci rapat.",
+      "color": "#E2A98E",
+      "model": "models/tiffany-lock-bangle.glb",
       "animation": {
         "visual": "Visual",
         "introDuration": 0.8,
@@ -141,29 +141,28 @@
           "scalePulse": 0.06
         },
         {
-          "type": "RunBounce",
-          "node": "Shoe",
-          "stepsPerSecond": 1.6,
-          "hopHeight": 0.012,
-          "pitchAngle": 12
+          "type": "LockClick",
+          "node": "Shackle",
+          "lift": 0.004,
+          "cyclesPerSecond": 0.5
         }
       ],
-      "usdz": "models/adidas-supernova.usdz",
-      "displayScale": 3
+      "usdz": "models/tiffany-lock-bangle.usdz",
+      "displayScale": 4
     },
     {
-      "id": "adidas-trionda",
-      "brand": "adidas",
-      "product": "Trionda Official Match Ball",
-      "tagline": "Bola resmi Piala Dunia FIFA 2026 dengan motif gelombang merah, hijau, dan biru.",
-      "color": "#1F4FB5",
-      "model": "models/adidas-trionda.glb",
+      "id": "tiffany-t-smile-pendant",
+      "brand": "Tiffany & Co.",
+      "product": "Tiffany T Smile Pendant",
+      "tagline": "Liontin melengkung seperti senyuman dengan ujung huruf T dari koleksi Tiffany T.",
+      "color": "#E9C77B",
+      "model": "models/tiffany-t-smile-pendant.glb",
       "animation": {
         "visual": "Visual",
         "introDuration": 0.8,
         "outroDuration": 0.25,
-        "liftHeight": 0.004,
-        "spinMode": "Continuous",
+        "liftHeight": 0,
+        "spinMode": "Sway",
         "spinSpeed": 30,
         "swayFrequency": 0.35,
         "bobAmplitude": 0.004,
@@ -177,17 +176,55 @@
           "scalePulse": 0.06
         },
         {
-          "type": "BallBounce",
-          "node": "Bounce",
-          "ball": "Ball",
-          "height": 0.04,
-          "bouncesPerSecond": 1.3,
-          "squash": 0.18,
-          "rollSpeed": 220
+          "type": "Pendulum",
+          "node": "Swing",
+          "angle": 10,
+          "frequency": 0.5
         }
       ],
-      "usdz": "models/adidas-trionda.usdz",
-      "displayScale": 3.5
+      "usdz": "models/tiffany-t-smile-pendant.usdz",
+      "displayScale": 4
+    },
+    {
+      "id": "tiffany-victoria-earrings",
+      "brand": "Tiffany & Co.",
+      "product": "Tiffany Victoria® Earrings",
+      "tagline": "Anting bunga dengan berlian potongan marquise dan bulat yang tersusun seperti kelopak.",
+      "color": "#81D8D0",
+      "model": "models/tiffany-victoria-earrings.glb",
+      "animation": {
+        "visual": "Visual",
+        "introDuration": 0.8,
+        "outroDuration": 0.25,
+        "liftHeight": 0,
+        "spinMode": "Sway",
+        "spinSpeed": 25,
+        "swayFrequency": 0.35,
+        "bobAmplitude": 0.004,
+        "bobFrequency": 0.8
+      },
+      "effects": [
+        {
+          "type": "Pulse",
+          "node": "Halo",
+          "frequency": 0.8,
+          "scalePulse": 0.06
+        },
+        {
+          "type": "Pendulum",
+          "node": "EarringL",
+          "angle": 9,
+          "frequency": 0.625
+        },
+        {
+          "type": "Pendulum",
+          "node": "EarringR",
+          "angle": 9,
+          "frequency": 0.5
+        }
+      ],
+      "usdz": "models/tiffany-victoria-earrings.usdz",
+      "displayScale": 4
     }
   ]
 }
